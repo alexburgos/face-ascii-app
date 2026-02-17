@@ -32,6 +32,13 @@ export function renderASCII(
     Math.floor(canvas.height / charHeight),
   );
 
+  if (sampleWidth <= 0 || sampleHeight <= 0) return '';
+
+  // Get ALL pixel data in one call (much faster than per-cell getImageData)
+  const fullImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const pixels = fullImageData.data;
+  const imgWidth = canvas.width;
+
   let asciiArt = '';
 
   for (let y = 0; y < sampleHeight; y++) {
@@ -40,21 +47,24 @@ export function renderASCII(
       const pixelX = Math.floor((x * canvas.width) / sampleWidth);
       const pixelY = Math.floor((y * canvas.height) / sampleHeight);
 
-      // Get image data for a small block
-      const imageData = ctx.getImageData(pixelX, pixelY, charWidth, charHeight);
-      const data = imageData.data;
-
-      // Calculate average brightness
+      // Calculate average brightness from the sampling block
       let brightness = 0;
-      for (let i = 0; i < data.length; i += 4) {
-        const r = data[i];
-        const g = data[i + 1];
-        const b = data[i + 2];
-        const a = data[i + 3];
-        // Weighted luminance calculation
-        brightness += (0.299 * r + 0.587 * g + 0.114 * b) * (a / 255);
+      const blockW = Math.min(charWidth, canvas.width - pixelX);
+      const blockH = Math.min(charHeight, canvas.height - pixelY);
+      const blockPixels = blockW * blockH;
+
+      for (let by = 0; by < blockH; by++) {
+        for (let bx = 0; bx < blockW; bx++) {
+          const idx = ((pixelY + by) * imgWidth + (pixelX + bx)) * 4;
+          const r = pixels[idx];
+          const g = pixels[idx + 1];
+          const b = pixels[idx + 2];
+          const a = pixels[idx + 3];
+          // Weighted luminance calculation
+          brightness += (0.299 * r + 0.587 * g + 0.114 * b) * (a / 255);
+        }
       }
-      brightness = brightness / (charWidth * charHeight * 255);
+      brightness = brightness / (blockPixels * 255);
 
       // Map brightness to ASCII character
       const charIndex = Math.floor(brightness * (ASCII_CHARS.length - 1));
