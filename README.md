@@ -1,6 +1,4 @@
-# face-ascii-app
-
-A real-time face tracking web app that renders your webcam feed as ASCII art. Toggle between normal camera view (with face detection bounding boxes) and an ASCII mode that converts the video stream into characters on-the-fly.
+Another one of those real-time face tracking web app that renders your webcam feed, with an option to use ASCII art. Toggle between normal camera view and an ASCII mode that converts the video stream into characters on-the-fly.
 
 ## Stack
 
@@ -13,7 +11,7 @@ A real-time face tracking web app that renders your webcam feed as ASCII art. To
 
 ## Getting Started
 
-### Prerequisites
+### How to run (I use Bun but you could use NPM/PNPM/Yarn etc.) 
 
 - [Bun](https://bun.sh) installed (`curl -fsSL https://bun.sh/install | bash`)
 - A browser with webcam access
@@ -24,21 +22,19 @@ A real-time face tracking web app that renders your webcam feed as ASCII art. To
 bun install
 ```
 
-### Run the dev server
+### Run dev server
 
 ```sh
 bun run dev
 ```
 
-Open the URL printed in the terminal (usually `http://localhost:5173`). Grant webcam permissions when prompted.
+Open the URL printed in the terminal. Grant webcam permissions when prompted. Enjoy!
 
 ### Build for production
 
 ```sh
 bun run build
 ```
-
-The output is written to the `dist/` directory.
 
 ### Preview the production build
 
