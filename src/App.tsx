@@ -1,36 +1,27 @@
 import { useState } from 'react';
 import FaceTracker from './components/FaceTracker';
 
-type ColorMode = 'green' | 'white' | 'cyan';
+type ColorMode = 'red' | 'green' | 'blue';
 
 const DEFAULT_FONT_SIZE = 12;
 
 const colorHex: Record<ColorMode, string> = {
-  green: '#00ff00',
-  white: '#ffffff',
-  cyan: '#00ffff',
+  red: '#FE0000',
+  green: '#00FF40',
+  blue: '#0059CF',
 };
 
 function App() {
   const [enabled, setEnabled] = useState(false);
   const [asciiMode, setAsciiMode] = useState(false);
-  const [colorMode, setColorMode] = useState<ColorMode>('green');
+  const [colorMode, setColorMode] = useState<ColorMode>('red');
   const [fontSize, setFontSize] = useState(DEFAULT_FONT_SIZE);
 
   return (
-    <div data-theme="dim" className="min-h-screen bg-base-200 flex flex-col">
-      {/* Navbar */}
-      <nav className="navbar px-6">
-        <span className="text-lg font-semibold tracking-tight">
-          Just another Face Tracker with ASCII capabilities
-        </span>
-      </nav>
-
-      {/* Main */}
+    <div data-theme="lofi" className="min-h-screen bg-base-200 flex flex-col">
       <main className="flex-1 flex justify-center p-6 mt-20">
-        <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6 items-start">
-          {/* Video Feed */}
-          <div className="card bg-base-100 shadow-md overflow-hidden">
+        <div className="w-full max-w-6xl grid grid-rows-[1fr_auto] lg:grid-cols-[1fr_280px] gap-6 items-start">
+          <div className=" overflow-hidden">
             <div className="aspect-4/3 bg-black">
               <FaceTracker
                 enabled={enabled}
@@ -41,26 +32,23 @@ function App() {
             </div>
           </div>
 
-          {/* Controls */}
-          <div className="card bg-base-100 shadow-md">
+          <div className="">
             <div className="card-body gap-5 p-5">
-              <h2 className="text-xs font-medium uppercase tracking-widest text-base-content/40">
-                Controls
+              <h2 className="text-md text-center ">
+                Another Face Tracker with ASCII :)
               </h2>
 
-              {/* Start / Stop */}
               <button
                 className={`btn w-full ${enabled ? 'btn-error' : 'btn-success'}`}
                 onClick={() => setEnabled((prev) => !prev)}
               >
-                {enabled ? 'Stop Camera' : 'Start Camera'}
+                {enabled ? 'Camera Off' : 'Camera On'}
               </button>
 
               <div className="divider my-0" />
 
-              {/* ASCII Mode Toggle */}
               <label className="flex items-center justify-between cursor-pointer">
-                <span className="text-sm font-medium">ASCII Mode</span>
+                <span className="text-md font-medium">ASCII</span>
                 <input
                   type="checkbox"
                   className="toggle toggle-success toggle-sm"
@@ -69,18 +57,17 @@ function App() {
                 />
               </label>
 
-              {/* Color Picker */}
               <div>
                 <span className="text-xs text-base-content/50 mb-2 block">Color</span>
                 <div className="flex gap-3">
-                  {(['green', 'white', 'cyan'] as const).map((color) => (
+                  {(['red', 'green', 'blue'] as const).map((color) => (
                     <button
                       key={color}
                       onClick={() => setColorMode(color)}
-                      className={`w-7 h-7 rounded-full transition-all outline-2 outline-offset-2 ${
+                      className={` cursor-pointer w-7 h-7 rounded-full transition-all outline-2 outline-offset-2 ${
                         colorMode === color
                           ? 'outline outline-base-content scale-110'
-                          : 'opacity-50 hover:opacity-75'
+                          : 'opacity-75 hover:opacity-95'
                       }`}
                       style={{ backgroundColor: colorHex[color] }}
                       aria-label={color}
@@ -89,7 +76,6 @@ function App() {
                 </div>
               </div>
 
-              {/* Font Size Slider */}
               {asciiMode && (
                 <div>
                   <div className="flex justify-between items-center mb-2">
@@ -98,7 +84,7 @@ function App() {
                   </div>
                   <input
                     type="range"
-                    className="range range-success range-sm"
+                    className="range range-info range-sm"
                     min={8}
                     max={16}
                     value={fontSize}
@@ -109,17 +95,15 @@ function App() {
 
               <div className="divider my-0" />
 
-              {/* Hint */}
-              <p className="text-[11px] text-center text-base-content/30 leading-relaxed">
-                Enable webcam and toggle ASCII mode for real-time effects
+              <p className="text-[11px] text-center text-base-content/70 leading-relaxed">
+                Don't forget to enable webcam permissions via your browser settings!
               </p>
             </div>
           </div>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="py-4 text-center text-xs text-base-content/25 border-t border-base-300">
+      <footer className="py-4 text-center text-xs text-base-content/25">
         Built by Alex Burgos with React &amp; face-api.js
       </footer>
     </div>

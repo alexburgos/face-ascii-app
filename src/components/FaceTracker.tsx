@@ -5,14 +5,14 @@ import { renderASCII } from '../utils/asciiRenderer';
 interface FaceTrackerProps {
   enabled: boolean;
   asciiMode: boolean;
-  colorMode: 'green' | 'white' | 'cyan';
+  colorMode: 'red' | 'green' | 'blue';
   fontSize: number;
 }
 
 const COLOR_MAP = {
-  green: '#00ff00',
-  white: '#ffffff',
-  cyan: '#00ffff',
+  red: '#FE0000',
+  green: '#00FF40',
+  blue: '#0059CF',
 } as const;
 
 const FaceTracker: React.FC<FaceTrackerProps> = React.memo(({
@@ -49,7 +49,6 @@ const FaceTracker: React.FC<FaceTrackerProps> = React.memo(({
     }
   }, []);
 
-  // Load face detection models
   useEffect(() => {
     const loadModels = async () => {
       try {
@@ -69,7 +68,6 @@ const FaceTracker: React.FC<FaceTrackerProps> = React.memo(({
     loadModels();
   }, []);
 
-  // Initialize webcam
   useEffect(() => {
     const initWebcam = async () => {
       if (!enabled || !videoRef.current) return;
@@ -106,7 +104,6 @@ const FaceTracker: React.FC<FaceTrackerProps> = React.memo(({
     };
   }, [enabled]);
 
-  // Set up canvas size when video is ready
   useEffect(() => {
     const handleVideoLoadedMetadata = () => {
       if (videoRef.current && canvasRef.current && outputCanvasRef.current) {
@@ -127,7 +124,6 @@ const FaceTracker: React.FC<FaceTrackerProps> = React.memo(({
     }
   }, []);
 
-  // Main processing loop
   useEffect(() => {
     if (!enabled) return;
 
@@ -156,7 +152,6 @@ const FaceTracker: React.FC<FaceTrackerProps> = React.memo(({
         return;
       }
 
-      // Draw video frame to processing canvas
       try {
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       } catch (err) {
@@ -173,11 +168,9 @@ const FaceTracker: React.FC<FaceTrackerProps> = React.memo(({
         const lineHeight = safeFontSize + 1;
         const padding = 8;
 
-        // Calculate grid dimensions that will fill the output canvas
         const cols = Math.max(1, Math.floor((outputCanvas.width - padding * 2) / actualCharWidth));
         const rows = Math.max(1, Math.floor((outputCanvas.height - padding * 2) / lineHeight));
 
-        // Sampling block size to evenly cover the source canvas
         const asciiArt = renderASCII(canvas, {
           charWidth: Math.max(1, Math.round(canvas.width / cols)),
           charHeight: Math.max(1, Math.round(canvas.height / rows)),
@@ -185,7 +178,6 @@ const FaceTracker: React.FC<FaceTrackerProps> = React.memo(({
           maxHeight: rows,
         });
 
-        // Draw to output canvas
         outputCtx.fillStyle = '#000000';
         outputCtx.fillRect(0, 0, outputCanvas.width, outputCanvas.height);
 
@@ -198,7 +190,6 @@ const FaceTracker: React.FC<FaceTrackerProps> = React.memo(({
           outputCtx.fillText(lines[i], padding, padding + i * lineHeight);
         }
       } else {
-        // Regular video with face highlight
         try {
           outputCtx.drawImage(video, 0, 0, outputCanvas.width, outputCanvas.height);
         } catch (err) {
@@ -241,7 +232,6 @@ const FaceTracker: React.FC<FaceTrackerProps> = React.memo(({
             console.error('Face detection error:', err);
           }
         } else if (faceDetectionRef.current) {
-          // Show previous face detection result without re-detecting
           setFaceDetected(true);
         }
       }
@@ -307,7 +297,6 @@ const FaceTracker: React.FC<FaceTrackerProps> = React.memo(({
     </div>
   );
 }, (prevProps, nextProps) => {
-  // Custom comparison for memoization
   return (
     prevProps.enabled === nextProps.enabled &&
     prevProps.asciiMode === nextProps.asciiMode &&
